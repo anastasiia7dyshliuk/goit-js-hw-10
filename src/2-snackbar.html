@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 2 — Promise Generator</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <load
+      src="./partials/header.html"
+      icon-path="img/sprite.svg#logo"
+      highlight-snackbar="active"
+    />
+
+    <main>
+      <div class="container">
+        <h1 class="main-title">
+          Promise <span class="main-title-gradient">Generator</span>
+        </h1>
+
+        <form class="form">
+          <label class="form-label">
+            Delay (ms)
+            <input class="input" type="number" name="delay" min="0" required />
+          </label>
+
+          <fieldset class="fieldset">
+            <legend>State</legend>
+            <label class="radio-label">
+              <input type="radio" name="state" value="fulfilled" required />
+              Fulfilled
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="state" value="rejected" required />
+              Rejected
+            </label>
+          </fieldset>
+
+          <button class="btn" type="submit">Create notification</button>
+        </form>
+
+        <load src="./partials/back-link.html" />
+      </div>
+    </main>
+
+    <load src="./partials/footer.html" />
+
+    <script type="module" src="./js/2-snackbar.js"></script>
+  </body>
+</html>
