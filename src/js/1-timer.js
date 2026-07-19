@@ -4,7 +4,6 @@ import 'flatpickr/dist/flatpickr.min.css';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-
 const inputEl = document.querySelector('#datetime-picker');
 const startBtnEl = document.querySelector('[data-start]');
 
@@ -13,8 +12,9 @@ const hoursEl = document.querySelector('[data-hours]');
 const minutesEl = document.querySelector('[data-minutes]');
 const secondsEl = document.querySelector('[data-seconds]');
 
-let userSelectedDate = null;
+startBtnEl.disabled = true;
 
+let userSelectedDate = null;
 let timerIntervalId = null;
 
 const options = {
@@ -22,6 +22,7 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
+
   onClose(selectedDates) {
     const selectedDate = selectedDates[0];
 
@@ -33,11 +34,11 @@ const options = {
       });
 
       startBtnEl.disabled = true;
-    } else {
-      userSelectedDate = selectedDate;
-
-      startBtnEl.disabled = false;
+      return;
     }
+
+    userSelectedDate = selectedDate;
+    startBtnEl.disabled = false;
   },
 };
 
@@ -55,8 +56,8 @@ function convertMs(ms) {
 
   const days = Math.floor(ms / day);
   const hours = Math.floor((ms % day) / hour);
-  const minutes = Math.floor(((ms % day) % hour) / minute);
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const minutes = Math.floor((ms % hour) / minute);
+  const seconds = Math.floor((ms % minute) / second);
 
   return { days, hours, minutes, seconds };
 }
@@ -68,27 +69,32 @@ function updateTimerInterface({ days, hours, minutes, seconds }) {
   secondsEl.textContent = addLeadingZero(seconds);
 }
 
+function tick() {
+  const msLeft = userSelectedDate.getTime() - Date.now();
+
+  if (msLeft <= 0) {
+    clearInterval(timerIntervalId);
+
+    updateTimerInterface({
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+    });
+
+    inputEl.disabled = false;
+    return;
+  }
+
+  updateTimerInterface(convertMs(msLeft));
+}
+
 function onStartButtonClick() {
   startBtnEl.disabled = true;
   inputEl.disabled = true;
 
   tick();
   timerIntervalId = setInterval(tick, 1000);
-}
-
-function tick() {
-  const msLeft = userSelectedDate.getTime() - new Date().getTime();
-
-  if (msLeft <= 0) {
-    clearInterval(timerIntervalId);
-
-    updateTimerInterface({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-    inputEl.disabled = false;
-  } else {
-    const timeComponents = convertMs(msLeft);
-    updateTimerInterface(timeComponents);
-  }
 }
 
 startBtnEl.addEventListener('click', onStartButtonClick);
